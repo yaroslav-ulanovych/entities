@@ -1,14 +1,35 @@
-# Simple case class reading.
+# Simple case class reading
 Let's create a case class for examples below.
 
 ```scala
 case class Person(id: Int, name: String)
 ```
 
-All you need to read a case class is read function
+To read a case class you need a read function
 
 ```scala
 import com.mahpella.entities.reading.caseclasses.read
+```
+
+and an adapter to your data source you want to read from.
+Say, we want to read from a map
+
+```scala
+val data = Map("id" -> 2, "name" -> "John")
+```
+
+then we use built in map adapter
+
+```scala
+import com.mahpella.entities.reading.caseclasses.MapAdapter
+```
+
+Reading is simple
+
+```scala
+    val person = read[Person] from MapAdapter(data)
+
+    person shouldBe Person(2, "John")
 ```
 
 Reading java map?

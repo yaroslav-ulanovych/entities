@@ -1,13 +1,13 @@
 package com.mahpella.entities.reading.caseclasses.docs
 
 // doc begin
-// # Simple case class reading.
+// # Simple case class reading
 // Let's create a case class for examples below.
 case class Person(id: Int, name: String)
 // doc end
 
 // doc begin
-// All you need to read a case class is read function
+// To read a case class you need a read function
 import com.mahpella.entities.reading.caseclasses.read
 // doc end
 
@@ -15,12 +15,13 @@ import com.mahpella.entities.reading.caseclasses.read
 class ReadTest extends com.mahpella.entities.FunSuite {
   test("SimpleTopLevelCaseClass") {
 
+// doc begin
 // and an adapter to your data source you want to read from.
-// Say, we want to read a from a map
+// Say, we want to read from a map
     val data = Map("id" -> 2, "name" -> "John")
-// then we use build in map adapter
+// then we use built in map adapter
     import com.mahpella.entities.reading.caseclasses.MapAdapter
-// reading is as simple as that
+// Reading is simple
     val person = read[Person] from MapAdapter(data)
 
     person shouldBe Person(2, "John")
