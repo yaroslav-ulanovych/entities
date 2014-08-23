@@ -1,7 +1,7 @@
 package com.mahpella.entities.reading.caseclasses.docs
 
 import com.mahpella.entities.FunSpec
-import com.mahpella.entities.reading.caseclasses.{MissingFieldException, NotCompanionObjectException}
+import com.mahpella.entities.reading.caseclasses.{BadFieldValueException, MissingFieldException, NotCompanionObjectException}
 
 // doc begin
 // # Simple case class reading
@@ -69,7 +69,28 @@ class Part1 extends FunSpec {
     }
 // doc end
   }
+
+  it("bad field value") {
+// doc begin
+// When your data source contains a value of type you don't expect,
+// like bool instead of int in example below
+    val data = Map[String, Any]("id" -> false, "name" -> "John")
+// you also get a detailed exception
+    try {
+      read[Person] from MapAdapter(data)
+      fail("an exception should be thrown")
+    } catch {
+      case e: BadFieldValueException => {
+        e.getMessage shouldBe "bad value for Person.id field of int type: Boolean(false)"
+        e.klass shouldBe classOf[Person]
+        e.field shouldBe "id"
+        e.fieldType shouldBe classOf[Int]
+        e.value shouldBe false
+        e.valueType shouldBe classOf[java.lang.Boolean]
+      }
+    }
 // doc end
+  }
 
   describe("nested case classes") {
     it("exception") {

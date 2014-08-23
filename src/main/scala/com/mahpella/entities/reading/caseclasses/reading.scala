@@ -49,9 +49,19 @@ object read {
       val fields = allFields.filter(_.isPrivate)
 
       if (fields.length == argTypes.length) {
-        val args = fields zip argTypes map { case (field, tpe) =>
+        val args = fields zip argTypes map { case (field, fieldType) =>
           adapter.get(field.getName) match {
-            case Some(x) => x
+            case Some(value) => {
+              val valueType = value.getClass
+              val fieldTypeNotPrimitive = fieldType.getName match {
+                case "int" => classOf[Integer]
+                case x => fieldType
+              }
+              if (!fieldTypeNotPrimitive.isAssignableFrom(valueType)) {
+                throw new BadFieldValueException(klass, field.getName, fieldType, value, valueType)
+              }
+              value
+            }
             case None => throw new MissingFieldException(klass, field.getName, adapter.data)
           }
         }
