@@ -1,7 +1,7 @@
 package com.mahpella.entities.reading.caseclasses.docs
 
 import com.mahpella.entities.FunSpec
-import com.mahpella.entities.reading.caseclasses.NotCompanionObjectException
+import com.mahpella.entities.reading.caseclasses.{MissingFieldException, NotCompanionObjectException}
 
 // doc begin
 // # Simple case class reading
@@ -43,6 +43,33 @@ class Part1 extends FunSpec {
     person shouldBe Person(2, "John")
 // doc end
   }
+
+  it("missing field") {
+// doc begin
+// If you try to read some trash an exception will be thrown.
+// Exceptions tend to contain complete information, so
+// missing field exception
+    val data = Map[String, Any]()
+    try {
+      read[Person] from MapAdapter(data)
+// doc end
+      fail("an exception should be thrown")
+// doc begin
+// gives you information about class we were trying to instantiate,
+// missing field name and data we were looking for the field in
+    } catch {
+      case e: MissingFieldException => {
+        e.getMessage shouldBe "missing field Person.id in Map()"
+// You also have direct access to those parts for, I don't know,
+// localized error messages?
+        e.klass shouldBe classOf[Person]
+        e.field shouldBe "id"
+        e.data shouldBe data
+      }
+    }
+// doc end
+  }
+// doc end
 
   describe("nested case classes") {
     it("exception") {
@@ -94,7 +121,3 @@ class Part2 extends FunSpec {
     enclosingMethod
   }
 }
-//    it("reading") {
-//    }
-//  }
-//}

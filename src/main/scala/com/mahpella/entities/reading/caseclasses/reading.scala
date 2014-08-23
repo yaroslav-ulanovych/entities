@@ -50,7 +50,10 @@ object read {
 
       if (fields.length == argTypes.length) {
         val args = fields zip argTypes map { case (field, tpe) =>
-          adapter.get(field.getName).get
+          adapter.get(field.getName) match {
+            case Some(x) => x
+            case None => throw new MissingFieldException(klass, field.getName, adapter.data)
+          }
         }
         val castArgs = args.asInstanceOf[Array[Object]]
         val instance = instantiator.applyMethod.invoke(instantiator.companionObject, castArgs: _*)
