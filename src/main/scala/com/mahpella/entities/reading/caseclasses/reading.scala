@@ -7,9 +7,8 @@ import scala.reflect.ClassTag
 
 object read {
 
-  def apply[E](implicit classTag: ClassTag[E], params: Params = DefaultParams) = new {
-    def from(adapter: Adapter): E = {
-
+  def apply[E](implicit classTag: ClassTag[E]) = new {
+    def from[T](data: T)(implicit params: Params[T] = DefaultParams): E = {
       val klass = classTag.runtimeClass
 
       val instantiator = params.instantiators.find(_.klass == klass) match {
@@ -50,19 +49,35 @@ object read {
 
       if (fields.length == argTypes.length) {
         val args = fields zip argTypes map { case (field, fieldType) =>
-          adapter.get(field.getName) match {
+          val key = params.fieldNamingConvention.apply(Utils.splitFieldNameIntoParts(field.getName))
+          params.adapter.get(data, key) match {
             case Some(value) => {
               val valueType = value.getClass
               val fieldTypeNotPrimitive = fieldType.getName match {
                 case "int" => classOf[Integer]
                 case x => fieldType
               }
-              if (!fieldTypeNotPrimitive.isAssignableFrom(valueType)) {
-                throw new BadFieldValueException(klass, field.getName, fieldType, value, valueType)
+              val convertedValue = if (!fieldTypeNotPrimitive.isAssignableFrom(valueType)) {
+                params.converters find { x =>
+                  x.srcClass.isAssignableFrom(valueType) && fieldType.isAssignableFrom(x.dstClass)
+                } match {
+                  case Some(converter) => {
+                    val option = converter.asInstanceOf[Converter[Any, Any]].convert(value)
+                    option match {
+                      case Some(convertedValue) => convertedValue
+                      case None => {
+                        badFieldValue(klass, key, fieldType, value, valueType, Some(converter))
+                      }
+                    }
+                  }
+                  case None => badFieldValue(klass, key, fieldType, value, valueType, None)
+                }
+              } else {
+                value
               }
-              value
+              convertedValue
             }
-            case None => throw new MissingFieldException(klass, field.getName, adapter.data)
+            case None => throw new MissingFieldException(klass, key, data)
           }
         }
         val castArgs = args.asInstanceOf[Array[Object]]

@@ -10,4 +10,14 @@ libraryDependencies +=  "org.scala-lang" % "scala-reflect" % "2.11.2"
 
 libraryDependencies +=  "com.mahpella" %% "util" % "0.0.1"
 
+
+
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.2" % "test"
+
+libraryDependencies += "org.json4s" %% "json4s-core" % "3.2.10" % "test"
+
+libraryDependencies += "org.json4s" %% "json4s-native" % "3.2.10" % "test"
+
+libraryDependencies += "com.typesafe" % "config" % "1.2.1" % "test"
+
+libraryDependencies += "com.h2database" % "h2" % "1.4.181" % "test"

@@ -2,11 +2,6 @@ package com.mahpella.entities.reading.caseclasses
 
 import com.mahpella.util.ClassUtils
 
-
-trait Instatiator {
-  val klass: Class[_]
-}
-
 class NotCompanionObjectException(prefix: String, val reason: String) extends Exception(
   s"$prefix seems not to be a companion object, cause $reason"
 ) {
