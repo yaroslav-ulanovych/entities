@@ -6,7 +6,7 @@ case class Params[-T](
   adapter: Adapter[T],
 // [Converters](#converters-section) even discrepancies between
 // types of case class fields and types of data source fields.
-  converters: Seq[Converter[_, _]],
+  converters: Seq[Converter],
 // [Field naming convention](#field-naming-conventions-section)
   fieldNamingConvention: FieldNamingConvention,
 // [Instantiators](#instantiators-section) solve problem of nested case classes.
@@ -17,7 +17,7 @@ case class Params[-T](
 // def begin ParamsMethods
   def +[U](x: Adapter[U]) = copy(adapter = x)
 
-  def +(x: Converter[_, _]) = copy(converters = converters :+ x)
+  def +(x: Converter) = copy(converters = converters :+ x)
 
   def +(x: FieldNamingConvention) = copy(fieldNamingConvention = x)
 

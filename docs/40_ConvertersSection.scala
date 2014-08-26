@@ -1,6 +1,6 @@
 package com.mahpella.entities.reading.caseclasses.docs
 
-import com.mahpella.entities.FunSpec
+import com.mahpella.entities.FunSuite
 
 import com.mahpella.entities.reading.caseclasses.read
 import com.mahpella.entities.reading.caseclasses.DefaultParams
@@ -18,13 +18,13 @@ import com.mahpella.entities.reading.caseclasses.Adapter
 import org.json4s.JObject
 import org.json4s.native.JsonParser
 // doc end
-class ConvertersSection extends FunSpec {
+class ConvertersSection extends FunSuite {
 // doc begin
   val json = """{"id": 2, "name": "John"}"""
   val jval = JsonParser.parse(json)
   val jobj = jval.asInstanceOf[JObject]
 // doc end
-  it("json read fail") {
+  test("json read fail") {
 // doc begin
     val e = intercept[BadFieldValueException] {
       read[Person] from jobj.values
@@ -33,7 +33,7 @@ class ConvertersSection extends FunSpec {
 // doc end
   }
 
-  it("custom converer") {
+  test("custom converer") {
 // doc begin
 // We could fix that problem writing a proper adapter.
     object JsonAdapter extends Adapter[JObject] {
@@ -49,7 +49,6 @@ class ConvertersSection extends FunSpec {
 // data extracting, while data converting can be a separate step. That's more
 // composable, since you can use one converter with different adapters and one
 // adapter with different converters.
-//
 // Converter is just a function from one type to an option of another type
 // include Converter
 // In fact it's a little bite more than just a function, cause it should carry
@@ -62,5 +61,30 @@ class ConvertersSection extends FunSpec {
     val person = read[Person].from(jobj.values)(DefaultParams + BigIntToInt)
     person shouldBe Person(2, "John")
 // doc end
+  }
+
+  test("enum converter") {
+// Another possible case for converters is parsing enumerations,
+// which are often kept as strings or integers in data source, but
+// we want a normal enumeration in case class.
+// doc end
+    import com.mahpella.entities.reading.caseclasses.JavaEnumConverter
+    import com.mahpella.entities.reading.caseclasses.docs.ClassWithJavaEnumField
+// doc begin
+// include JavaEnumConverter
+// include ClassWithJavaEnumField
+    implicit val params = DefaultParams + JavaEnumConverter
+
+    read[ClassWithJavaEnumField] from Map("state" -> 1) shouldBe {
+      ClassWithJavaEnumField(java.lang.Thread.State.RUNNABLE)
+    }
+
+    read[ClassWithJavaEnumField] from Map("state" -> "WAITING") shouldBe {
+      ClassWithJavaEnumField(java.lang.Thread.State.WAITING)
+    }
+    
+    intercept[BadFieldValueException] {
+      read[ClassWithJavaEnumField] from Map("state" -> "not an enum")
+    }
   }
 }

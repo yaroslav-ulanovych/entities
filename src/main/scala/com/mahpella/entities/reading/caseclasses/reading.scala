@@ -59,10 +59,10 @@ object read {
               }
               val convertedValue = if (!fieldTypeNotPrimitive.isAssignableFrom(valueType)) {
                 params.converters find { x =>
-                  x.srcClass.isAssignableFrom(valueType) && fieldType.isAssignableFrom(x.dstClass)
+                  x.canConvertFrom(valueType) && x.canConvertTo(fieldType)
                 } match {
                   case Some(converter) => {
-                    val option = converter.asInstanceOf[Converter[Any, Any]].convert(value)
+                    val option = converter.convert(value, fieldType)
                     option match {
                       case Some(convertedValue) => convertedValue
                       case None => {

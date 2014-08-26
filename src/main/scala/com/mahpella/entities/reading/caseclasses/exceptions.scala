@@ -22,7 +22,7 @@ class BadFieldValueException(
   val fieldType: Class[_],
   val value: Any,
   val valueType: Class[_],
-  val converter: Option[Converter[_, _]]
+  val converter: Option[Converter]
 ) extends Exception(
   s"bad value for ${klass.getSimpleName}.$field field of ${fieldType.getSimpleName} type: ${valueType.getSimpleName}($value), converter: $converter"
 )
@@ -34,6 +34,6 @@ object badFieldValue {
     fieldType: Class[_],
     value: Any,
     valueType: Class[_],
-    converter: Option[Converter[_, _]]
+    converter: Option[Converter]
   ) = throw new BadFieldValueException(klass, field, fieldType, value, valueType, converter)
 }

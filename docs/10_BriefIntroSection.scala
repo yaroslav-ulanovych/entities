@@ -1,7 +1,6 @@
-package com.mahpella.entities.reading.caseclasses.docs
+package com.mahpella.entities.reading.caseclasses.docs.inner
 
 import com.mahpella.entities.FunSuite
-
 
 // doc begin
 // # Brief intro example
