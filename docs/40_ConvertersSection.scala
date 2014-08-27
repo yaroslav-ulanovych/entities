@@ -1,11 +1,11 @@
-package com.mahpella.entities.reading.caseclasses.docs
+package xtract.docs
 
 import com.mahpella.entities.FunSuite
 
-import com.mahpella.entities.reading.caseclasses.read
-import com.mahpella.entities.reading.caseclasses.DefaultParams
-import com.mahpella.entities.reading.caseclasses.BadFieldValueException
-import com.mahpella.entities.reading.caseclasses.Adapter
+import xtract.read
+import xtract.DefaultParams
+import xtract.BadFieldValueException
+import xtract.Adapter
 
 
 // doc begin
@@ -55,7 +55,7 @@ class ConvertersSection extends FunSuite {
 // types, so that read function is able to find a proper converter,
 // but that is done implicitly and hidden from user.
 // Let's create one.
-    import com.mahpella.entities.reading.caseclasses.Converter
+    import xtract.Converter
     val BigIntToInt = Converter((x: BigInt) => if (x.isValidInt) Some(x.toInt) else None)
 // and check that it works
     val person = read[Person].from(jobj.values)(DefaultParams + BigIntToInt)
@@ -68,8 +68,8 @@ class ConvertersSection extends FunSuite {
 // which are often kept as strings or integers in data source, but
 // we want a normal enumeration in case class.
 // doc end
-    import com.mahpella.entities.reading.caseclasses.JavaEnumConverter
-    import com.mahpella.entities.reading.caseclasses.docs.ClassWithJavaEnumField
+    import xtract.JavaEnumConverter
+    import xtract.docs.ClassWithJavaEnumField
 // doc begin
 // include JavaEnumConverter
 // include ClassWithJavaEnumField

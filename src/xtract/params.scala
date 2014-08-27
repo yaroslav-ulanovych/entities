@@ -1,4 +1,4 @@
-package com.mahpella.entities.reading.caseclasses
+package xtract
 
 // def begin Params
 case class Params[-T](

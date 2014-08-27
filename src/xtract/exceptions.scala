@@ -1,4 +1,4 @@
-package com.mahpella.entities.reading.caseclasses
+package xtract
 
 class ReadException(msg: String) extends Exception(msg)
 

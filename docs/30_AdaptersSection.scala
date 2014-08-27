@@ -1,9 +1,9 @@
-package com.mahpella.entities.reading.caseclasses.docs
+package xtract.docs
 
 import com.mahpella.entities.FunSuite
 
-import com.mahpella.entities.reading.caseclasses.read
-import com.mahpella.entities.reading.caseclasses.DefaultParams
+import xtract.read
+import xtract.DefaultParams
 
 // doc begin
 // # <a name="adapters-section">Adapters</a>
@@ -13,7 +13,7 @@ import com.mahpella.entities.reading.caseclasses.DefaultParams
 // include Adapter
 // So you can parse into case classes json, xml, jdbc result sets, virtually everything you can write
 // an adapter for. And it's not hard to do so, let's write one for jdbc result set, for example.
-import com.mahpella.entities.reading.caseclasses.Adapter
+import xtract.Adapter
 // doc end
 class AdaptersSection extends FunSuite {
   test("writing custom adapter") {

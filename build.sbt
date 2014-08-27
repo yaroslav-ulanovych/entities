@@ -6,6 +6,19 @@ version := "0.0.3-SNAPSHOT"
 
 scalaVersion := "2.11.2"
 
+
+
+sourcesInBase := false
+
+scalaSource in Compile := baseDirectory.value / "src"
+
+scalaSource in Test := baseDirectory.value / "test"
+
+unmanagedSourceDirectories in Test += baseDirectory.value / "docs"
+
+
+
+
 libraryDependencies +=  "org.scala-lang" % "scala-reflect" % "2.11.2"
 
 libraryDependencies +=  "com.mahpella" %% "util" % "0.0.1"

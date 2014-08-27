@@ -1,7 +1,7 @@
-package com.mahpella.entities.reading.caseclasses.docs
+package xtract.docs
 
 import com.mahpella.entities.FunSuite
-import com.mahpella.entities.reading.caseclasses.{read, DefaultParams}
+import xtract.{read, DefaultParams}
 
 // doc begin
 // # <a name="instantiators-section">Instantiators</a>
@@ -10,7 +10,7 @@ import com.mahpella.entities.reading.caseclasses.{read, DefaultParams}
 // If you try to read it, you'll get [an exception](#not-companion-object-exception-section).
 // To fix that you have to supply a companion object
 // (as for nested case classes it carries enclosing class instance) explicitly via instantiator
-import com.mahpella.entities.reading.caseclasses.Instantiator
+import xtract.Instantiator
 // doc end
 class InstantiatorsSection extends FunSuite {
   test("nested case classes") {

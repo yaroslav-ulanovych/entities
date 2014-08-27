@@ -1,4 +1,4 @@
-package com.mahpella.entities.reading.caseclasses
+package xtract
 
 import com.mahpella.util.ClassUtils
 import com.mahpella.util.reflection.RichField

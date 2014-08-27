@@ -1,7 +1,7 @@
-package com.mahpella.entities.reading.caseclasses.docs
+package xtract.docs
 
 import com.mahpella.entities.FunSuite
-import com.mahpella.entities.reading.caseclasses.read
+import xtract.read
 
 // doc begin
 // # <a name="exceptions-section">Exceptions</a>
@@ -14,7 +14,7 @@ import com.mahpella.entities.reading.caseclasses.read
 class ExceptionsSection extends FunSuite {
 // doc begin
 // ## <a name="missing-field-exception-section">Missing field exception</a>
-  import com.mahpella.entities.reading.caseclasses.MissingFieldException
+  import xtract.MissingFieldException
 // doc end
   test("MissingFieldException") {
 // doc begin
@@ -35,7 +35,7 @@ class ExceptionsSection extends FunSuite {
 
 // doc begin
 // ## <a name="bad-field-value-exception-section">Bad field value exception</a>
-  import com.mahpella.entities.reading.caseclasses.BadFieldValueException
+  import xtract.BadFieldValueException
 // doc end
 
   test("BadFieldValueException") {
@@ -58,7 +58,7 @@ class ExceptionsSection extends FunSuite {
 
 // doc begin
 // ## <a name="not-companion-object-exception-section">Not companion object exception</a>
-  import com.mahpella.entities.reading.caseclasses.NotCompanionObjectException
+  import xtract.NotCompanionObjectException
 // doc end
   test("NotCompanionObjectException") {
 // doc begin

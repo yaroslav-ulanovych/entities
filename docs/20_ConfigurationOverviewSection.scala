@@ -1,4 +1,4 @@
-package com.mahpella.entities.reading.caseclasses.docs
+package xtract.docs
 
 import com.mahpella.entities.FunSuite
 
@@ -8,7 +8,7 @@ import com.mahpella.entities.FunSuite
 // include Params
 // Read function accepts configuration via an implicit parameter.
 // What you saw in intro was achieved with default parameters
-import com.mahpella.entities.reading.caseclasses.DefaultParams
+import xtract.DefaultParams
 // You can always start with defaults
 // include DefaultParams
 // and customize what you need via methods

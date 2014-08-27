@@ -1,11 +1,11 @@
-package com.mahpella.entities.reading.caseclasses.docs.inner
+package xtract.docs.inner
 
 import com.mahpella.entities.FunSuite
 
 // doc begin
 // # Brief intro example
 case class Person(id: Int, name: String)
-import com.mahpella.entities.reading.caseclasses.read
+import xtract.read
 // doc end
 
 class BriefIntroSection extends FunSuite {

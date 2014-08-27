@@ -1,4 +1,4 @@
-package com.mahpella.entities.reading.caseclasses.docs
+package xtract.docs
 
 import com.mahpella.entities.FunSuite
 
@@ -16,7 +16,7 @@ class FieldNamingConventionsSection extends FunSuite {
 // doc begin
 // include Casing
 // There are some built int ones.
-  import com.mahpella.entities.reading.caseclasses.{LowerCamelCase, LowerCase, UpperCase}
+  import xtract.{LowerCamelCase, LowerCase, UpperCase}
 // doc end
   test("casing") {
 // doc begin
@@ -34,7 +34,7 @@ class FieldNamingConventionsSection extends FunSuite {
 // doc begin
 // include Delimiter
 // Built in
-  import com.mahpella.entities.reading.caseclasses.{NoDelimiter, Underscore}
+  import xtract.{NoDelimiter, Underscore}
 // doc end
   test("delimiter") {
 // doc begin
@@ -48,7 +48,7 @@ class FieldNamingConventionsSection extends FunSuite {
 // doc end
   test("reading with field naming convention") {
 // doc begin
-    import com.mahpella.entities.reading.caseclasses.{read, DefaultParams}
+    import xtract.{read, DefaultParams}
     val params = DefaultParams + UpperCase.noDelimiter
     val person = read[Person].from(Map("ID" -> 2, "NAME" -> "John"))(params)
     person shouldBe Person(2, "John")
