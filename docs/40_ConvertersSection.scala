@@ -1,4 +1,6 @@
-package xtract.docs
+package xtract.docs.converters
+
+case class Person(id: Int, name: String)
 
 import com.mahpella.entities.FunSuite
 

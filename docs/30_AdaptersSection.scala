@@ -1,4 +1,6 @@
-package xtract.docs
+package xtract.docs.adapters
+
+case class Person(id: Int, name: String)
 
 import com.mahpella.entities.FunSuite
 
@@ -41,7 +43,7 @@ class AdaptersSection extends FunSuite {
     }
 // Let's check it.
     Class.forName("org.h2.Driver")
-    val conn = DriverManager.getConnection("jdbc:h2:~/writing-custom-adapter-example-database")
+    val conn = DriverManager.getConnection("jdbc:h2:mem:")
     val stmt = conn.createStatement()
     stmt.execute("create table if not exists Person(id int, name varchar)")
     stmt.execute("delete from Person")

@@ -1,7 +1,9 @@
-package xtract.docs
+package xtract.docs.exceptions
 
 import com.mahpella.entities.FunSuite
 import xtract.read
+
+case class Person(id: Int, name: String)
 
 // doc begin
 // # <a name="exceptions-section">Exceptions</a>
@@ -47,7 +49,7 @@ class ExceptionsSection extends FunSuite {
     val e = intercept[BadFieldValueException] {
       read[Person] from data
     }
-    e.getMessage shouldBe "bad value for Person.id field of int type: Boolean(false)"
+    e.getMessage shouldBe "bad value for Person.id field of int type: Boolean(false), converter: None"
     e.klass shouldBe classOf[Person]
     e.field shouldBe "id"
     e.fieldType shouldBe classOf[Int]

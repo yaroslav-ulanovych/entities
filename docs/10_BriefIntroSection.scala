@@ -1,4 +1,4 @@
-package xtract.docs.inner
+package xtract.docs.briefintro
 
 import com.mahpella.entities.FunSuite
 

@@ -1,6 +1,8 @@
-package xtract.docs
+package xtract.docs.fnc
 
 import com.mahpella.entities.FunSuite
+
+case class Person(id: Int, name: String)
 
 // doc begin
 // # <a name="field-naming-conventions-section">Field naming conventions</a>
