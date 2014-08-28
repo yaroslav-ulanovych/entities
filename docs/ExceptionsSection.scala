@@ -5,6 +5,7 @@ import xtract.read
 
 case class Person(id: Int, name: String)
 
+
 // doc begin
 // # <a name="exceptions-section">Exceptions</a>
 // When parsing fails an exception is thrown.

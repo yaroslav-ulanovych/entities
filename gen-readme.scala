@@ -46,7 +46,7 @@ class CodeBlock(line: String) {
   def add(line: String) = lines += line
 
   def end() {
-    val pad = lines.map(_.prefixLength(_.isWhitespace)).min
+    val pad = lines.filter(!_.isEmpty).map(_.prefixLength(_.isWhitespace)).min
     println("")
     println("```scala")
     lines.foreach(x => println(x.drop(pad)))
@@ -59,8 +59,8 @@ var block: CodeBlock = null
 
 val defs = mutable.HashMap[String, DefBegin]()
 
-def process(base: String, fileName: String) {
-  val file = new File(base + fileName)
+def process(fileName: String) {
+  val file = new File(fileName)
   val source = Source.fromFile(file)
   val lines = source.getLines()
   process(lines.toSeq.map(LineType.apply))
@@ -138,24 +138,21 @@ def process(lines: Traversable[LineType]) {
       }
       case None => throw new Exception(s"can't find $id to include")
     }
+    case x => throw new MatchError(x)
   })
 }
 
-val main = "./src/main/scala/com/mahpella/entities/reading/caseclasses/"
-val test = "./src/test/scala/com/mahpella/entities/reading/caseclasses/docs/"
+process("src/params.scala")
+process("src/adapters.scala")
+process("src/converters.scala")
+process("src/fieldnamingconventions.scala")
+process("src/instantiators.scala")
+process("src/exceptions.scala")
 
-process(main, "params.scala")
-process(main, "adapters.scala")
-process(main, "converters.scala")
-process(main, "fieldnamingconventions.scala")
-process(main, "instantiators.scala")
-process(main, "exceptions.scala")
-
-process(test, "_testclasses.scala")
-process(test, "10_BriefIntroSection.scala")
-process(test, "20_ConfigurationOverviewSection.scala")
-process(test, "30_AdaptersSection.scala")
-process(test, "40_ConvertersSection.scala")
-process(test, "50_FieldNamingConventionsSection.scala")
-process(test, "InstantiatorsSection.scala")
-process(test, "ExceptionsSection.scala")
+process("docs/10_BriefIntroSection.scala")
+process("docs/20_ConfigurationOverviewSection.scala")
+process("docs/30_AdaptersSection.scala")
+process("docs/40_ConvertersSection.scala")
+process("docs/50_FieldNamingConventionsSection.scala")
+//process(test, "InstantiatorsSection.scala")
+//process(test, "ExceptionsSection.scala")

@@ -3,12 +3,13 @@ package xtract
 import scala.reflect.ClassTag
 
 
-
+// def begin Converter
 trait Converter {
   def canConvertFrom(klass: Class[_]): Boolean
   def canConvertTo(klass: Class[_]): Boolean
   def convert(value: Any, expected: Class[_]): Option[Any]
 }
+// def end
 
 class SimpleConverter[From: ClassTag, To: ClassTag](f: From => Option[To]) extends Converter {
   val srcClass = implicitly[ClassTag[From]].runtimeClass

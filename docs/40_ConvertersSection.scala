@@ -64,29 +64,34 @@ class ConvertersSection extends FunSuite {
     person shouldBe Person(2, "John")
 // doc end
   }
+}
 
-  test("enum converter") {
+
+// doc begin
 // Another possible case for converters is parsing enumerations,
 // which are often kept as strings or integers in data source, but
 // we want a normal enumeration in case class.
-// doc end
-    import xtract.JavaEnumConverter
-    import xtract.docs.ClassWithJavaEnumField
-// doc begin
 // include JavaEnumConverter
-// include ClassWithJavaEnumField
-    implicit val params = DefaultParams + JavaEnumConverter
+import java.lang.Thread.State
+case class Thread(state: State)
+// doc end
 
-    read[ClassWithJavaEnumField] from Map("state" -> 1) shouldBe {
-      ClassWithJavaEnumField(java.lang.Thread.State.RUNNABLE)
+class Part2 extends FunSuite {
+  test("enum converter") {
+    import xtract.JavaEnumConverter
+// doc begin
+    implicit val params = DefaultParams + JavaEnumConverter
+//
+    read[Thread] from Map("state" -> 1) shouldBe {
+      Thread(State.RUNNABLE)
     }
 
-    read[ClassWithJavaEnumField] from Map("state" -> "WAITING") shouldBe {
-      ClassWithJavaEnumField(java.lang.Thread.State.WAITING)
+    read[Thread] from Map("state" -> "WAITING") shouldBe {
+      Thread(State.WAITING)
     }
     
     intercept[BadFieldValueException] {
-      read[ClassWithJavaEnumField] from Map("state" -> "not an enum")
+      read[Thread] from Map("state" -> "not an enum")
     }
   }
 }

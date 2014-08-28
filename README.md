@@ -1,13 +1,8 @@
-/home/mahpella/work/entities/tools/gen-readme.scala:70: warning: match may not be exhaustive.
-It would fail on the following inputs: (??, ??), (??, DefBegin(_, _)), (??, DefEnd), (??, Include(_)), (CodeLine(_), DefBegin(_, _)), (DefEnd, CodeLine(_)), (DefEnd, DocLine(_)), (Include(_), ??), (Include(_), CodeLine(_)), (Include(_), DefBegin(_, _)), (Include(_), DefEnd), (Include(_), DocEnd), (Include(_), DocLine(_)), (Include(_), Include(_))
-  lines.toSeq.:+(DocEnd).foldLeft[LineType](DocEnd)({
-                                                    ^
-one warning found
 # Brief intro example
 
 ```scala
 case class Person(id: Int, name: String)
-import com.mahpella.entities.reading.caseclasses.read
+import xtract.read
 ```
 
 
@@ -33,7 +28,7 @@ adapter: Adapter[T],
 types of case class fields and types of data source fields.
 
 ```scala
-converters: Seq[Converter[_, _]],
+converters: Seq[Converter],
 ```
 
 [Field naming convention](#field-naming-conventions-section)
@@ -53,7 +48,7 @@ Read function accepts configuration via an implicit parameter.
 What you saw in intro was achieved with default parameters
 
 ```scala
-import com.mahpella.entities.reading.caseclasses.DefaultParams
+import xtract.DefaultParams
 ```
 
 You can always start with defaults
@@ -70,13 +65,13 @@ object DefaultParams extends Params(
 and customize what you need via methods
 
 ```scala
-  def +[U](x: Adapter[U]) = copy(adapter = x)
+def +[U](x: Adapter[U]) = copy(adapter = x)
 
-  def +(x: Converter[_, _]) = copy(converters = converters :+ x)
+def +(x: Converter) = copy(converters = converters :+ x)
 
-  def +(x: FieldNamingConvention) = copy(fieldNamingConvention = x)
+def +(x: FieldNamingConvention) = copy(fieldNamingConvention = x)
 
-  def +(x: CompanionObjectInstantiator) = copy(instantiators = instantiators :+ x)
+def +(x: CompanionObjectInstantiator) = copy(instantiators = instantiators :+ x)
 ```
 
 # <a name="adapters-section">Adapters</a>
@@ -94,20 +89,20 @@ So you can parse into case classes json, xml, jdbc result sets, virtually everyt
 an adapter for. And it's not hard to do so, let's write one for jdbc result set, for example.
 
 ```scala
-import com.mahpella.entities.reading.caseclasses.Adapter
+import xtract.Adapter
 ```
 
 
 ```scala
-    import java.sql._
+import java.sql._
 
-    object ResultSetAdapter extends Adapter[ResultSet] {
-      def get(data: ResultSet, key: String): Option[Any] = {
-        val meta = data.getMetaData
-        val columns = (1 to meta.getColumnCount).map({ i =>
-          (meta.getColumnName(i), meta.getColumnType(i))
-        }).toMap
-        columns.get(key.toUpperCase) match {
+object ResultSetAdapter extends Adapter[ResultSet] {
+  def get(data: ResultSet, key: String): Option[Any] = {
+    val meta = data.getMetaData
+    val columns = (1 to meta.getColumnCount).map({ i =>
+      (meta.getColumnName(i), meta.getColumnType(i))
+    }).toMap
+    columns.get(key.toUpperCase) match {
 ```
 
 And yeah, you don't need to use SQL_NAMING_CONVENTION in case classes
@@ -130,7 +125,7 @@ Let's check it.
 
 ```scala
 Class.forName("org.h2.Driver")
-val conn = DriverManager.getConnection("jdbc:h2:~/writing-custom-adapter-example-database")
+val conn = DriverManager.getConnection("jdbc:h2:mem:")
 val stmt = conn.createStatement()
 stmt.execute("create table if not exists Person(id int, name varchar)")
 stmt.execute("delete from Person")
@@ -183,28 +178,17 @@ object JsonAdapter extends Adapter[JObject] {
 read[Person].from(jobj)(DefaultParams + JsonAdapter) shouldBe Person(2, "John")
 ```
 
-But again as with field naming convention that burdens adapter, whose task is
+But that burdens adapter, whose task is
 data extracting, while data converting can be a separate step. That's more
 composable, since you can use one converter with different adapters and one
 adapter with different converters.
-
-```scala
-//
-```
-
 Converter is just a function from one type to an option of another type
 
 ```scala
-trait Converter[From, To] {
-```
-
-
-```scala
-def convert(x: From): Option[To]
-```
-
-
-```scala
+trait Converter {
+  def canConvertFrom(klass: Class[_]): Boolean
+  def canConvertTo(klass: Class[_]): Boolean
+  def convert(value: Any, expected: Class[_]): Option[Any]
 }
 ```
 
@@ -214,7 +198,7 @@ but that is done implicitly and hidden from user.
 Let's create one.
 
 ```scala
-import com.mahpella.entities.reading.caseclasses.Converter
+import xtract.Converter
 val BigIntToInt = Converter((x: BigInt) => if (x.isValidInt) Some(x.toInt) else None)
 ```
 
@@ -223,6 +207,68 @@ and check that it works
 ```scala
 val person = read[Person].from(jobj.values)(DefaultParams + BigIntToInt)
 person shouldBe Person(2, "John")
+```
+
+Another possible case for converters is parsing enumerations,
+which are often kept as strings or integers in data source, but
+we want a normal enumeration in case class.
+
+```scala
+object JavaEnumConverter extends Converter {
+```
+
+It accepts strings or integers
+
+```scala
+def canConvertFrom(klass: Class[_]) = {
+  klass == classOf[Integer] || klass == classOf[String]
+}
+```
+
+can convert to any enumeration.
+
+```scala
+def canConvertTo(klass: Class[_]) = klass.isEnum
+```
+
+Well, I don't know what to explain here :)
+
+```scala
+  def convert(value: Any, expected: Class[_]): Option[Any] = {
+    val xs = expected.getEnumConstants()
+    value match {
+      case i: Integer => {
+        if (i >= 0 && i < xs.length) Some(xs(i)) else None
+      }
+      case s: String => xs.find(_.asInstanceOf[Enum[_]].name() == s)
+    }
+  }
+}
+```
+
+
+```scala
+import java.lang.Thread.State
+case class Thread(state: State)
+```
+
+
+```scala
+    implicit val params = DefaultParams + JavaEnumConverter
+//
+    read[Thread] from Map("state" -> 1) shouldBe {
+      Thread(State.RUNNABLE)
+    }
+
+    read[Thread] from Map("state" -> "WAITING") shouldBe {
+      Thread(State.WAITING)
+    }
+    
+    intercept[BadFieldValueException] {
+      read[Thread] from Map("state" -> "not an enum")
+    }
+  }
+}
 ```
 
 # <a name="field-naming-conventions-section">Field naming conventions</a>
@@ -253,7 +299,7 @@ by supplying a second part of it — delimiter.
 There are some built int ones.
 
 ```scala
-import com.mahpella.entities.reading.caseclasses.{LowerCamelCase, LowerCase, UpperCase}
+import xtract.{LowerCamelCase, LowerCase, UpperCase}
 ```
 
 Lower camel case isn't actually doing anything,
@@ -261,12 +307,12 @@ cause we expect only case class field names to be passed here,
 which are already in lower camel case.
 
 ```scala
-    LowerCamelCase(List("home", "Address")) shouldBe List("home", "Address")
-    LowerCamelCase(List("HOME", "ADDRESS")) shouldBe List("HOME", "ADDRESS")
+LowerCamelCase(List("home", "Address")) shouldBe List("home", "Address")
+LowerCamelCase(List("HOME", "ADDRESS")) shouldBe List("HOME", "ADDRESS")
 
-    LowerCase(List("home", "Address")) shouldBe List("home", "address")
+LowerCase(List("home", "Address")) shouldBe List("home", "address")
 
-    UpperCase(List("home", "Address")) shouldBe List("HOME", "ADDRESS")
+UpperCase(List("home", "Address")) shouldBe List("HOME", "ADDRESS")
 ```
 
 Delimiter concatenates parts of names using given delimiter string.
@@ -280,7 +326,7 @@ case class Delimiter(value: String) {
 Built in
 
 ```scala
-import com.mahpella.entities.reading.caseclasses.{NoDelimiter, Underscore}
+import xtract.{NoDelimiter, Underscore}
 ```
 
 
@@ -299,119 +345,9 @@ case class FieldNamingConvention(casing: Casing, delimiter: Delimiter) {
 
 
 ```scala
-import com.mahpella.entities.reading.caseclasses.{read, DefaultParams}
+import xtract.{read, DefaultParams}
 val params = DefaultParams + UpperCase.noDelimiter
 val person = read[Person].from(Map("ID" -> 2, "NAME" -> "John"))(params)
 person shouldBe Person(2, "John")
 ```
 
-# <a name="instantiators-section">Instantiators</a>
-There are some caveats with nested case classes.
-One can't just instantiate it without an instance of enclosing class.
-If you try to read it, you'll get [an exception](#not-companion-object-exception-section).
-To fix that you have to supply a companion object
-(as for nested case classes it carries enclosing class instance) explicitly via instantiator
-
-```scala
-import com.mahpella.entities.reading.caseclasses.Instantiator
-```
-
-
-```scala
-def enclosingMethod {
-  case class Nested(id: Int, name: String)
-  val data = Map("id" -> 2, "name" -> "John")
-  implicit val params = DefaultParams + Instantiator(Nested)
-  val nested = read[Nested] from data
-  nested shouldBe Nested(2, "John")
-}
-enclosingMethod
-```
-
-# <a name="exceptions-section">Exceptions</a>
-When parsing fails an exception is thrown.
-They (exceptions) tend to contain as much information as possible,
-and all those information is available not only from `getMessage` method,
-but via dedicated fields. That allows you to create meaningful
-error messages for users of your api, for instance.
-## <a name="missing-field-exception-section">Missing field exception</a>
-
-```scala
-import com.mahpella.entities.reading.caseclasses.MissingFieldException
-```
-
-Missing field exception
-
-```scala
-val data = Map[String, Any]()
-val e = intercept[MissingFieldException] {
-  read[Person] from data
-}
-```
-
-gives you information about class we were trying to instantiate,
-missing field name and data we were looking for the field in
-
-```scala
-e.getMessage shouldBe "missing field Person.id in Map()"
-e.klass shouldBe classOf[Person]
-e.field shouldBe "id"
-e.data shouldBe data
-```
-
-## <a name="bad-field-value-exception-section">Bad field value exception</a>
-
-```scala
-import com.mahpella.entities.reading.caseclasses.BadFieldValueException
-```
-
-Bad field value exception is thrown, when your data source contains a value of type you don't expect,
-like bool instead of int in example below
-
-```scala
-val data = Map[String, Any]("id" -> false, "name" -> "John")
-```
-
-You also get a detailed exception
-
-```scala
-val e = intercept[BadFieldValueException] {
-  read[Person] from data
-}
-e.getMessage shouldBe "bad value for Person.id field of int type: Boolean(false)"
-e.klass shouldBe classOf[Person]
-e.field shouldBe "id"
-e.fieldType shouldBe classOf[Int]
-e.value shouldBe false
-e.valueType shouldBe classOf[java.lang.Boolean]
-```
-
-## <a name="not-companion-object-exception-section">Not companion object exception</a>
-
-```scala
-import com.mahpella.entities.reading.caseclasses.NotCompanionObjectException
-```
-
-One of the reasons of this exception is reading a nested case class.
-
-```scala
-def enclosingMethod = {
-  case class Nested(id: Int, name: String)
-  val e = intercept[NotCompanionObjectException] {
-    read[Nested] from Map[String, Any]()
-  }
-```
-
-You'll get an exception with a message about MODULE$ field
-
-```scala
-  e.reason shouldBe "it has no MODULE$ field"
-}
-enclosingMethod
-```
-
-That happens because to instantiate a case class read function
-searches for a companion object. For top level case classes it lays
-in static field MODULE$ in companion object class, but that's not true
-for nested ones, to fix that you have to
-[supply companion object explicitly](#instantiators-section).
