@@ -18,10 +18,7 @@ unmanagedSourceDirectories in Test += baseDirectory.value / "docs"
 
 
 
-
 libraryDependencies +=  "org.scala-lang" % "scala-reflect" % "2.11.2"
-
-libraryDependencies +=  "com.mahpella" %% "util" % "0.0.1"
 
 
 

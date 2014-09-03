@@ -1,8 +1,6 @@
 package xtract
 
-import com.mahpella.util.ClassUtils
-import com.mahpella.util.reflection.RichField
-
+import java.lang.reflect.{Modifier, Field}
 import scala.reflect.ClassTag
 
 object read {
@@ -45,7 +43,7 @@ object read {
 
       val allFields = klass.getDeclaredFields
 
-      val fields = allFields.filter(_.isPrivate)
+      val fields = allFields.filter(x => Modifier.isPrivate(x.getModifiers))
 
       if (fields.length == argTypes.length) {
         val args = fields zip argTypes map { case (field, fieldType) =>

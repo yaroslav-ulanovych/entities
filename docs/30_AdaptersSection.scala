@@ -37,10 +37,10 @@ class MapAdapterTest extends FunSuite {
 // doc end
 class JavaMapAdapterTest extends FunSuite {
   test("test") {
-    val data = new java.util.HashMap[String, Any]()
-    data.put("name", "John")
-    data.put("age", 42)
-    implicit val params = DefaultParams + JavaMapAdapter
+//    val data = new java.util.HashMap[String, Any]()
+//    data.put("name", "John")
+//    data.put("age", 42)
+//    implicit val params = DefaultParams + JavaMapAdapter
   }
 }
 
