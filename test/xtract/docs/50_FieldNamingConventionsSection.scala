@@ -1,6 +1,6 @@
 package xtract.docs.fnc
 
-import com.mahpella.entities.FunSuite
+import xtract.FunSuite
 
 case class Person(id: Int, name: String)
 
@@ -50,7 +50,7 @@ class FieldNamingConventionsSection extends FunSuite {
 // doc end
   test("reading with field naming convention") {
 // doc begin
-    import xtract.{read, DefaultParams}
+    import xtract.{DefaultParams, read}
     val params = DefaultParams + UpperCase.noDelimiter
     val person = read[Person].from(Map("ID" -> 2, "NAME" -> "John"))(params)
     person shouldBe Person(2, "John")

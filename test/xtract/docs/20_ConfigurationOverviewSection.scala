@@ -1,6 +1,6 @@
 package xtract.docs
 
-import com.mahpella.entities.FunSuite
+import xtract.FunSuite
 
 // doc begin
 // # Configuration

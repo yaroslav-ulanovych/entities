@@ -1,10 +1,13 @@
 package xtract
 
-import scala.collection.GenMap
 import java.util.{Map => JavaMap}
 
+import scala.collection.GenMap
+import scala.reflect.ClassTag
+
 // def begin Adapter
-abstract class Adapter[-T] {
+abstract class Adapter[-T: ClassTag] {
+  def accepts(klass: Class[_]): Boolean = implicitly[ClassTag[T]].runtimeClass.isAssignableFrom(klass)
   def get(data: T, key: String): Option[Any]
 }
 // def end

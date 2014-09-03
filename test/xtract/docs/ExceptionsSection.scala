@@ -1,6 +1,6 @@
 package xtract.docs.exceptions
 
-import com.mahpella.entities.FunSuite
+import xtract.FunSuite
 import xtract.read
 
 case class Person(id: Int, name: String)

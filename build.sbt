@@ -14,8 +14,6 @@ scalaSource in Compile := baseDirectory.value / "src"
 
 scalaSource in Test := baseDirectory.value / "test"
 
-unmanagedSourceDirectories in Test += baseDirectory.value / "docs"
-
 
 
 libraryDependencies +=  "org.scala-lang" % "scala-reflect" % "2.11.2"

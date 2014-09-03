@@ -1,7 +1,8 @@
 package xtract.docs
 
-import com.mahpella.entities.FunSuite
-import xtract.{read, DefaultParams}
+import xtract.FunSuite
+
+import xtract.{DefaultParams, read}
 
 // doc begin
 // # <a name="instantiators-section">Instantiators</a>

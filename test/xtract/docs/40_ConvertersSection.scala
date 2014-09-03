@@ -2,12 +2,8 @@ package xtract.docs.converters
 
 case class Person(id: Int, name: String)
 
-import com.mahpella.entities.FunSuite
-
-import xtract.read
-import xtract.DefaultParams
-import xtract.BadFieldValueException
-import xtract.Adapter
+import xtract.FunSuite
+import xtract.{Adapter, BadFieldValueException, DefaultParams, read}
 
 
 // doc begin

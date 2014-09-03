@@ -1,7 +1,5 @@
 package xtract
 
-import com.mahpella.entities.FunSuite
-
 class VarTest extends FunSuite {
   test("nested case class companion object bytecode naming") {
     case class Nested()

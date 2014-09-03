@@ -10,7 +10,9 @@ case class Params[-T](
 // [Field naming convention](#field-naming-conventions-section)
   fieldNamingConvention: FieldNamingConvention,
 // [Instantiators](#instantiators-section) solve problem of nested case classes.
-  instantiators: Seq[CompanionObjectInstantiator]
+  instantiators: Seq[CompanionObjectInstantiator],
+  diver: Diver,
+  typeHintLocation: TypeHintLocation
 )
 // def end
 {
@@ -22,14 +24,18 @@ case class Params[-T](
   def +(x: FieldNamingConvention) = copy(fieldNamingConvention = x)
 
   def +(x: CompanionObjectInstantiator) = copy(instantiators = instantiators :+ x)
+
+  def +(x: Diver) = copy(diver = x)
 // def end
 }
 
 // def begin DefaultParams
 object DefaultParams extends Params(
   adapter = MapAdapter,
-  converters = Seq(),
+  converters = Seq(JavaEnumConverter),
   fieldNamingConvention = LowerCamelCase.noDelimiter,
-  instantiators = Seq()
+  instantiators = Seq(),
+  diver = DefaultDiver,
+  typeHintLocation = InFieldNearTypeHintLocation("type")
 )
 // def end

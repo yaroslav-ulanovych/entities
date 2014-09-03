@@ -1,6 +1,5 @@
 package xtract
 
-
 // def begin FieldNamingConvention
 case class FieldNamingConvention(casing: Casing, delimiter: Delimiter) {
   def apply(xs: List[String]): String = delimiter(casing(xs))
@@ -29,6 +28,10 @@ object LowerCase extends Casing {
 
 object UpperCase extends Casing {
   def apply(xs: List[String]): List[String] = xs.map(_.toUpperCase)
+}
+
+object AsIsCase extends Casing {
+  def apply(xs: List[String]): List[String] = xs
 }
 
 // def begin Delimiter
