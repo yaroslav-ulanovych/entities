@@ -1,4 +1,4 @@
-package xtract.docs
+package xtract.docs.configurationoverview
 
 import xtract.FunSuite
 

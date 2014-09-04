@@ -2,8 +2,7 @@ package xtract.docs.converters
 
 case class Person(id: Int, name: String)
 
-import xtract.FunSuite
-import xtract.{Adapter, BadFieldValueException, DefaultParams, read}
+import xtract.{Adapter, BadFieldValueException, DefaultParams, FunSuite, read}
 
 
 // doc begin

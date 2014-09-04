@@ -1,8 +1,6 @@
-package xtract.docs
+package xtract.docs.instantiators
 
-import xtract.FunSuite
-
-import xtract.{DefaultParams, read}
+import xtract.{DefaultParams, FunSuite, read}
 
 // doc begin
 // # <a name="instantiators-section">Instantiators</a>
