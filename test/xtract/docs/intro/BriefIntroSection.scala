@@ -1,7 +1,6 @@
 package xtract.docs.intro
 
 import xtract.FunSuite
-
 import xtract.docs.`var`.Gender
 
 // doc begin
@@ -10,7 +9,7 @@ case class Person(name: String, gender: Gender, age: Int, address: Address, stat
 case class Address(country: String, city: String)
 sealed trait Status
 case class Single() extends Status
-case class Dating(partner: String) extends Status
+case class Married(partner: String) extends Status
 
 import xtract.read
 // doc end
@@ -27,12 +26,12 @@ class BriefIntroSection extends FunSuite {
         "city" -> "NY"
       ),
       "status" -> Map(
-        "type" -> "Dating",
+        "type" -> "Married",
         "partner" -> "Mary"
       )
     )
     val person = read[Person] from data
-    person shouldBe Person("John", Gender.Male, 42, Address("USA", "NY"), Dating("Mary"))
+    person shouldBe Person("John", Gender.Male, 42, Address("USA", "NY"), Married("Mary"))
 // doc end
   }
 }

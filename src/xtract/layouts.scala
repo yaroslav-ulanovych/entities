@@ -2,11 +2,11 @@ package xtract
 
 
 
-trait Diver {
+trait Layout {
   def dive[T](key: String, data: T, params: Params[T]): Option[(String, Any)]
 }
 
-object DefaultDiver extends Diver {
+object DefaultLayout extends Layout {
   def dive[T](key: String, data: T, params: Params[T]): Option[(String, Any)] = {
     params.adapter.get(data, key) match {
       case Some(v) => Some(("", v))
@@ -15,7 +15,7 @@ object DefaultDiver extends Diver {
   }
 }
 
-case class FlatDiver(separator: String) extends Diver {
+case class FlatLayout(separator: String) extends Layout {
   def dive[T](key: String, data: T, params: Params[T]): Option[(String, Any)] = {
     Some((key + separator, data))
   }

@@ -1,6 +1,6 @@
 package xtract.docs.divers
 
-import xtract.{FlatDiver, DefaultParams, read, FunSuite}
+import xtract.{FlatLayout, DefaultParams, read, FunSuite}
 
 case class Person(homeAddress: Address)
 case class Address(country: String, postCode: String)
@@ -23,8 +23,17 @@ class DiversTest extends FunSuite {
   }
 
   test("flat layout") {
-    implicit val params = DefaultParams + FlatDiver("_")
+    implicit val params = DefaultParams + FlatLayout("_")
     val person = read[Person] from flatLayout
     person shouldBe Person(Address("USA", "90503"))
   }
 }
+
+trait Figure
+case class Circle(x: Int, y: Int, radius: Int)
+case class Rectangle(x: Int, y: Int, width: Int, height: Int)
+
+class PolymorphicLayoutExamples {
+
+}
+

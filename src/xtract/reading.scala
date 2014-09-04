@@ -60,7 +60,7 @@ object read {
         fieldType match {
           // embedded
           case _ if ClassUtils.isCaseClass(fieldType) => {
-            params.diver.dive(key, data, params) match {
+            params.layout.dive(key, data, params) match {
               case Some((path, data)) => {
                 if (adapter.accepts(data.getClass)) {
                   readimpl(fieldType, data, params.asInstanceOf[Params[Any]], path)
@@ -73,7 +73,7 @@ object read {
           }
           // embedded polymorphic
           case _ if ClassUtils.isAbstract(fieldType) => {
-            ???
+            ??? //params.typeHintLocation.
           }
           case _ => {
             adapter.get(data, key) match {
