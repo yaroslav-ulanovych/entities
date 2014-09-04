@@ -25,8 +25,8 @@ class BriefIntroSection extends FunSuite {
         "country" -> "USA",
         "city" -> "NY"
       ),
+      "statusType" -> "Married",
       "status" -> Map(
-        "type" -> "Married",
         "partner" -> "Mary"
       )
     )

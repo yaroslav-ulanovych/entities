@@ -73,7 +73,9 @@ object read {
             }
           }
           // embedded polymorphic
-          case _ if ClassUtils.isAbstract(fieldType) => {
+          case _ if ClassUtils.isAbstract(fieldType) && !fieldType.isPrimitive => {
+            println(fieldType)
+            println(ClassUtils.isAbstract(fieldType))
             val typeHint = params.typeHintLocation.get(fieldName, data, params)
             typeHint match {
               case Some(Right(typeHint)) => {

@@ -22,7 +22,7 @@ case class PersonWithTwoAddresses(homeAddress: Address, businessAddress: Address
 class EmbeddedConcreteClassesSection extends FunSuite {
 // doc begin
 // Probably the first way to serialize a complex case class to some data structure that comes up to mind is
-  val dafaultData = Map(
+  val defaultData = Map(
     "name" -> "John",
     "address" -> Map(
       "country" -> "USA",
@@ -67,7 +67,7 @@ class EmbeddedConcreteClassesSection extends FunSuite {
 
   test("default layout") {
 // so you don't need to setup anything
-    val person = read[Person] from dafaultData
+    val person = read[Person] from defaultData
     person shouldBe Person("John", Address("USA", "NY"))
 // doc end
   }
@@ -76,7 +76,7 @@ class EmbeddedConcreteClassesSection extends FunSuite {
 // doc begin
 // Flat layout takes a single parameter that is a separator between field names that form a final field name.
     implicit val params = DefaultParams + FlatLayout("_")
-    val person = read[Person] from dafaultData
+    val person = read[Person] from flatData
     person shouldBe Person("John", Address("USA", "NY"))
 // doc end
   }

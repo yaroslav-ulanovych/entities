@@ -22,11 +22,7 @@ class FieldNamingConventionsSection extends FunSuite {
 // doc end
   test("casing") {
 // doc begin
-// Lower camel case isn't actually doing anything,
-// cause we expect only case class field names to be passed here,
-// which are already in lower camel case.
-    LowerCamelCase(List("home", "Address")) shouldBe List("home", "Address")
-    LowerCamelCase(List("HOME", "ADDRESS")) shouldBe List("HOME", "ADDRESS")
+    LowerCamelCase(List("HOME", "ADDRESS")) shouldBe List("home", "Address")
 
     LowerCase(List("home", "Address")) shouldBe List("home", "address")
 

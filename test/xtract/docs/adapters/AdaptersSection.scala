@@ -1,10 +1,9 @@
-package xtract.docs
+package xtract.docs.adapters
 
 case class Person(name: String, age: Int)
 object John extends Person("John", 42)
 
-import xtract.FunSuite
-import xtract.{DefaultParams, read}
+import xtract.{DefaultParams, FunSuite, read}
 
 // doc begin
 // # <a name="adapters-section">Adapters</a>
