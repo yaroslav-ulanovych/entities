@@ -56,7 +56,8 @@ object read {
 
     if (caseClassFields.length == argTypes.length) {
       val args = caseClassFields zip argTypes map { case (field, fieldType) =>
-        val key = path + params.fieldNamingConvention.apply(Utils.splitFieldNameIntoParts(field.getName))
+        val fieldName = Utils.splitFieldNameIntoParts(field.getName)
+        val key = path + params.fieldNamingConvention.apply(fieldName)
         fieldType match {
           // embedded
           case _ if ClassUtils.isCaseClass(fieldType) => {
@@ -73,7 +74,30 @@ object read {
           }
           // embedded polymorphic
           case _ if ClassUtils.isAbstract(fieldType) => {
-            ??? //params.typeHintLocation.
+            val typeHint = params.typeHintLocation.get(fieldName, data, params)
+            typeHint match {
+              case Some(Right(typeHint)) => {
+                val tpe = params.typeHintNamingStrategy.guessType(fieldType, typeHint)
+                tpe match {
+                  case Some(klass) => {
+                    params.layout.dive(key, data, params) match {
+                      case Some((path, data)) => {
+                        if (adapter.accepts(data.getClass)) {
+                          readimpl(klass, data, params.asInstanceOf[Params[Any]], path)
+                        } else {
+                          ???
+//                          badFieldValue(klass, key, fieldType, data, data.getClass, None)
+                        }
+                      }
+                      case None => throw new MissingFieldException(klass, key, data)
+                    }
+                  }
+                  case None => throw new ReadException("bad type hint: " + typeHint)
+                }
+              }
+              case Some(Left(x)) => badFieldValue(klass, key + "#typehint", classOf[String], x, x.getClass, None)
+              case None => throw new MissingFieldException(klass, key + "#typehint", data)
+            }
           }
           case _ => {
             adapter.get(data, key) match {

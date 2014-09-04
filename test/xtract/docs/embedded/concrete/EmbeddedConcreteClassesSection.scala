@@ -3,6 +3,7 @@ package xtract.docs.embedded.concrete
 import xtract.{DefaultParams, read, FunSuite}
 
 // doc begin
+// # <a name="embedded-concrete-classes-section">Embedded concrete classes</a>
 // Case classes may contain other case classes in their fields,
 // (I'll call them _complex_ as opposed to _flat_ case classes)
 // for instance person may have an address
@@ -55,7 +56,7 @@ class EmbeddedConcreteClassesSection extends FunSuite {
   import xtract.{FlatLayout, DefaultLayout}
 // I won't dive into implementation details, cause I believe all possible cases are covered by built-in layouts,
 // and there is no need for users to define their owns. If it's not so, please let me know and we'll fix that.
-// 
+//
 // Default layout is, well, the default
 // doc end
   test("default layout should be the default") {

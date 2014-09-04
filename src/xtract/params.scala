@@ -12,7 +12,8 @@ case class Params[-T](
 // [Instantiators](#instantiators-section) solve problem of nested case classes.
   instantiators: Seq[CompanionObjectInstantiator],
   layout: Layout,
-  typeHintLocation: TypeHintLocation
+  typeHintLocation: TypeHintLocation,
+  typeHintNamingStrategy: TypeHintNamingStrategy
 )
 // def end
 {
@@ -36,6 +37,7 @@ object DefaultParams extends Params(
   fieldNamingConvention = LowerCamelCase.noDelimiter,
   instantiators = Seq(),
   layout = DefaultLayout,
-  typeHintLocation = InFieldNearTypeHintLocation("type")
+  typeHintLocation = InFieldNearTypeHintLocation("type"),
+  typeHintNamingStrategy = SamePackageTypeHintNamingStrategy
 )
 // def end

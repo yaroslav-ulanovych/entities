@@ -20,10 +20,16 @@ object SamePackageTypeHintNamingStrategy extends TypeHintNamingStrategy {
 }
 
 trait TypeHintLocation {
-  def get[T](field: String, data: T, adapter: Adapter[T]): Option[Either[Any, String]] = {
-    ???
-  }
+  def get[T](field: List[String], data: T, params: Params[T]): Option[Either[Any, String]]
 }
 
 case class InFieldNearTypeHintLocation(postfix: String) extends TypeHintLocation {
+  def get[T](field: List[String], data: T, params: Params[T]): Option[Either[Any, String]] = {
+    val key = params.fieldNamingConvention.apply(field :+ "type")
+    params.adapter.get(data, key) match {
+      case Some(x: String) => Some(Right(x))
+      case Some(x) => Some(Left(x))
+      case None => None
+    }
+  }
 }
